@@ -19,9 +19,9 @@ authors:
 repository-code: 'https://github.com/trailofbits/multiplier'
 abstract: >-
   Multiplier provides precise and comprehensive code
-  understanding capabilities. It does so by saving build
+  understanding capabilities for Solidity smart contracts. It does so by saving build
   artifacts into a database, and then making them
-  persistently accessible using a C++ or Python API.
+  persistently accessible using a Python or JavaScript API.
 
 
   Multiplier emphasizes the ability to unique identify all
@@ -38,14 +38,16 @@ abstract: >-
   linked at a whole-program granularity. We like to say that
   with its APIs, you can get everywhere from anywhere.
 keywords:
-  - c
-  - c++
-  - clang
+  - solidity
+  - smart contracts
+  - ethereum
+  - blockchain
   - compiler
   - index
   - analysis
   - intermediate representation
   - ast
   - abstract syntax tree
-  - parsing
+  - security
+  - audit
 license: Apache-2.0

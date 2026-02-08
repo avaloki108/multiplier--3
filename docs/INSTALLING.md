@@ -1,10 +1,20 @@
 # Installing the Multiplier SDK
 
-The Multiplier SDK has been tested on Ubuntu 23.10. Run the following command
-to install the Debian package:
+The Multiplier SDK has been tested on Ubuntu 23.10+. You can install it via npm
+or use the standalone installer package.
+
+## Installing via npm
 
 ```shell
-sudo apt install ./multiplier-2.0_1.linux_x86_64.deb
+npm install -g @multiplier/sdk
+```
+
+## Installing via standalone package
+
+Run the following command to install the standalone package:
+
+```shell
+sudo apt install ./multiplier-solidity-2.0_1.linux_x86_64.deb
 ```
 
 If you see an error such as: "Download is performed unsandboxed as root" then
@@ -22,17 +32,12 @@ directory. For example, Multiplier's build indexer will be installed to
 
 Over time, the package version numbers are likely to change so you will need to
 adjust the `.deb` file name. For the sake of simplicity in packaging, the SDK
-includes all of Multiplier's vendored dependencies, and these may conflict with
-binaries/libraries already installed on your system. You should not assume that
-Multiplier's vendored dependencies are drop-in compatible with your system ones,
-as our dependency building process often toggles specific compilation flags that
-set or restrict specific features, and thus the enabled features may be
-incompatible with those from Aptitude or the Debian package manager.
+includes all of Multiplier's vendored dependencies.
 
 You can use dpkg to install the debian package as well. In case you encounter
 issues related to missing dependencies, force install them using `apt`.
 
 ```shell
-sudo dpkg -i multiplier-2.0_1.linux_x86_64.deb
+sudo dpkg -i multiplier-solidity-2.0_1.linux_x86_64.deb
 sudo apt install -f   # if you see error related to dependencies
 ```

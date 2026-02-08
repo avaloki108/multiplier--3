@@ -1,18 +1,17 @@
 # Building Multiplier
 
-Building Multiplier from scratch can take a long time, so prepare yourself. You
-will need a modern Clang (18+) and CMake (3.30+) to build Multiplier, as it
-relies on modern C++ and CMake features.
+Building Multiplier requires modern Solidity development tools. You will need 
+Node.js (20+), Foundry, and Python (3.12+) to build and use Multiplier.
 
 * [Step 0](#step-0)
   + [Dependencies](#dependencies)
 * [Step 1](#step-1)
   + [macOS](#macos)
-    - [XCode](#xcode)
+    - [Homebrew](#homebrew)
     - [Build tools](#build-tools)
   + [Linux](#linux)
-    - [Clang](#clang)
-    - [CMake](#cmake)
+    - [Node.js](#nodejs)
+    - [Foundry](#foundry)
     - [Python](#python)
 * [Step 2: Environment](#step-2--environment)
 * [Step 3: Download and build Multiplier](#step-3--download-and-build-multiplier)
@@ -31,120 +30,96 @@ the directory where everything goes.
 | Name | Version |
 | ---- | ------- |
 | [Git](https://git-scm.com/) | Latest |
-| [CMake](https://cmake.org/) | 3.30+ |
-| [Clang](http://clang.llvm.org/) | 18+ |
+| [Node.js](https://nodejs.org/) | 20+ |
+| [Foundry](https://book.getfoundry.sh/) | Latest |
 | [Python](https://www.python.org/) | 3.12+ |
 
 ## Step 1
 
 ### macOS
 
-#### XCode
+#### Homebrew
 
-Make sure that you have an up-to-date XCode. At a command line, you should be able
-to run `clang --version` and see something like this:
-
-```shell
-% clang --version
-Apple clang version 15.0.0 (clang-1500.3.9.4)
-Target: arm64-apple-darwin23.5.0
-Thread model: posix
-InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
-```
-
-If you don't see that, then try the following:
+Make sure that you have Homebrew installed. At a command line, you should be able
+to run `brew --version` and see output.
 
 ```shell
-xcode-select --install
+% brew --version
+Homebrew 4.2.0
 ```
 
-This will pop open some dialogs and you should click "Install". After installing,
-try running the following command:
-
-```shell
-% xcode-select -p
-/Applications/Xcode.app/Contents/Developer
-```
-
-It is worth it to try opening XCode (the app). Sometimes opening the GUI triggers
-further downloads and installs, which you should do. It is likely that you will
-need to re-do this step after each OS update/upgrade.
-
-If you already had XCode installed, and perhaps had it configured for iOS development
-or something like that, then you should open up the XCode app, open its "Preferences"
-menu, go to the "Locations" tab, and then modify the path for "Command Line Tools."
+If you don't have Homebrew installed, visit [https://brew.sh/](https://brew.sh/) to install it.
 
 #### Build tools
 
-Make sure that you have an up-to-date CMake build and Ninja build. On macOS, you
+Make sure that you have Node.js and Foundry installed. On macOS, you
 can [install Homebrew](https://brew.sh/) and run the following:
 
 ```shell
-brew install ninja cmake graphviz xdot
+brew install node
+curl -L https://foundry.paradigm.xyz | bash
+foundryup
 ```
-
-An alternative is to [download](https://cmake.org/download/) and install CMake
-from the official website.
 
 ### Linux
 
+#### Node.js
+
+Install Node.js (version 20+):
+
 ```shell
-sudo apt update
-sudo apt install build-essential ninja-build cmake graphviz xdot
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt-get install -y nodejs
 ```
 
-#### Clang
-
-If you can't `sudo apt-get install clang-18`, then try the following:
+Verify the installation:
 
 ```shell
-sudo apt install lsb_release
-
-curl -sSL https://apt.llvm.org/llvm-snapshot.gpg.key | \
-  gpg --dearmor - | \
-  sudo tee /etc/apt/trusted.gpg.d/llvm.gpg
-
-sudo apt-add-repository "deb https://apt.llvm.org/$(lsb_release -cs)/ llvm-toolchain-$(lsb_release -cs)-18 main"
-
-sudo apt install clang-18
+node --version
+npm --version
 ```
 
-#### CMake
+#### Foundry
 
-If you don't already have CMake 3.30+, and if your installed `cmake --version`
-reports a smaller version number, then try the following:
+Install Foundry (Forge, Cast, Anvil):
 
 ```shell
-curl -sSL https://apt.kitware.com/keys/kitware-archive-latest.asc | \
-    gpg --dearmor - | \
-    sudo tee /etc/apt/trusted.gpg.d/kitware.gpg
+curl -L https://foundry.paradigm.xyz | bash
+source ~/.bashrc
+foundryup
+```
 
-sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main"
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6AF7F09730B3F0A4
-sudo apt update
-sudo apt install kitware-archive-keyring
-sudo apt install cmake
+Verify the installation:
+
+```shell
+forge --version
+cast --version
+anvil --version
 ```
 
 #### Python
 
-You will need to have the Python headers and libraries installed, ideally for
-Python 3.12+. Python 3.11 should also work, but other uses of Multiplier's
-Python API may prefer 3.12+ due to its support for subinterpreters.
+You will need to have Python headers and libraries installed, ideally for
+Python 3.12+. Python is used for running analysis scripts and tools.
 
 ```shell
-sudo apt install python3.12-dev
+sudo apt install python3.12 python3-pip python3.12-dev
+```
+
+Install Python analysis tools:
+
+```shell
+pip3 install slither-analyzer solc-select mythril
 ```
 
 ## Step 2: Environment
 
 ```shell
-mkdir -p "${WORKSPACE_DIR}/build"
 mkdir -p "${WORKSPACE_DIR}/src"
 mkdir -p "${WORKSPACE_DIR}/install"
 ```
 
-Set virtual environment for Python:
+Set up a Python virtual environment (optional but recommended):
 
 ```shell
 if [[ ! -f "${WORKSPACE_DIR}/install/bin/activate" ]]; then
@@ -153,55 +128,51 @@ fi
 source "${WORKSPACE_DIR}/install/bin/activate"
 ```
 
-You should use at least Python 3.12 because of its support for subinterpreters.
+## Step 3: Download and set up Multiplier
 
-## Step 3: Download and build Multiplier
-
-**Note:** Multiplier will download and build most/all of its dependencies during
-CMake's configuration stage, unless you specify otherwise. Thus, you *do not*
-need to recursively initialize/clone its submodules.
+Clone the Multiplier repository:
 
 ```shell
 cd "${WORKSPACE_DIR}/src"
 git clone git@github.com:trailofbits/multiplier.git
+cd multiplier
 ```
 
-### Configuring
+### Installing Dependencies
 
 #### macOS
 
-You are *strongly* recommended to use Apple Clang (`/usr/bin/clang`) to build
-Multiplier, and not whatever version of Clang was built/installed by Homebrew.
+Install Node.js dependencies:
 
 ```shell
-cmake \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_INSTALL_PREFIX="${WORKSPACE_DIR}/install" \
-  -DCMAKE_C_COMPILER=/usr/bin/clang \
-  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
-  -DMX_ENABLE_INSTALL=ON \
-  -DMX_ENABLE_PYTHON_BINDINGS=ON \
-  -GNinja \
-  "${WORKSPACE_DIR}/src/multiplier"
+npm install
 ```
 
 #### Linux
 
+Install Node.js dependencies:
+
 ```shell
-cmake \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX="${WORKSPACE_DIR}/install" \
-    -DCMAKE_LINKER_TYPE=LLD \
-    -DCMAKE_C_COMPILER="$(which clang-18)" \
-    -DCMAKE_CXX_COMPILER="$(which clang++-18)" \
-    -DMX_ENABLE_INSTALL=ON \
-    -DMX_ENABLE_PYTHON_BINDINGS=ON \
-    -GNinja \
-    "${WORKSPACE_DIR}/src/multiplier"
+npm install
 ```
 
 ### Build & Install
 
+Build the project:
+
 ```shell
-ninja install
+npm run build
+```
+
+Run tests (if available):
+
+```shell
+npm test
+```
+
+Alternatively, you can use Foundry:
+
+```shell
+forge build
+forge test
 ```
