@@ -577,3 +577,27 @@ builds/
 install/
 
 *.db
+
+# Solidity / Ethereum
+node_modules/
+artifacts/
+cache/
+out/
+broadcast/
+typechain/
+typechain-types/
+coverage/
+coverage.json
+.env
+.env.local
+
+# Foundry
+lib/
+lcov.info
+
+# Hardhat
+hardhat.config.ts.cache
+
+# Slither
+.slither/
+crytic-export/
