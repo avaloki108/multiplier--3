@@ -2,24 +2,20 @@
 
 * [Basic usage](#basic-usage)
 * [Compatible Builds](#compatible-builds)
-* [Best Effort Builds](#best-effort-builds)
-* [Getting `compile_commands.json`](#getting--compile-commandsjson-)
-  + [Clang](#clang)
-  + [CMake](#cmake)
-  + [Bear](#bear)
-  + [`scan-build`](#-scan-build-)
-* [Importing builds from target binaries](#importing-builds-from-target-binaries)
+* [Getting build artifacts](#getting-build-artifacts)
+  + [Foundry](#foundry)
+  + [Hardhat](#hardhat)
+* [Importing builds from compiled contracts](#importing-builds-from-compiled-contracts)
 
 
 ## Basic usage
 
-Once installed, a build of a codebase can be indexed by the `mx-index` binary.
+Once installed, a build of a Solidity codebase can be indexed by the `mx-index` binary.
 Indexing produces a [SQLite](https://sqlite.org/) database, whose path is
 specified using the `--db` command-line option. If you omit `--db` then the
 index is stored in `./mx-index.db`.
 
-Indexing is computationally expensive, and could take up to 30x for C code and
-300x for C++ code the time to build / compile the target codebase. Because of
+Indexing is computationally expensive for complex smart contract projects. Because of
 the nature of the indexing workload, `mx-index` also creates a
 [RocksDB](https://rocksdb.org/) key-value store, which is stored in the
 directory specified by `--workspace`. If you don't specify a workspace
@@ -27,8 +23,8 @@ directory, then `./mx-workspace` will be used.
 
 **Pro-tip:** Multiple independent builds can be stored in the same index
 database. One way to do this is to accumulate all build information into a
-single `compile_commands.json` file. Another way to do this is to run `mx-index`
-once for each independent `compile_commands.json`, and share the same `--db` and
+single build artifacts file. Another way to do this is to run `mx-index`
+once for each independent build, and share the same `--db` and
 `--workspace`. Note that only one `mx-index` can operate on a given workspace at
 a time.
 
@@ -39,15 +35,13 @@ shared with anyone who has the SDK or GUI.
 
 **Pro-tip:** Use the optional `--env` command-line argument to specify a path to
 a text file containing saved environment variables as of the start of the build
-of your target codebase. For example, prior to running make all on your target,
-save the environment variables with `env > env_vars.txt`. This will help
-Multiplier more accurately reproduce the original build environment from the
-compile commands.
+of your target codebase. This will help
+Multiplier more accurately reproduce the original build environment.
 
 ```shell
 /opt/multiplier/bin/mx-index \
       --db /path/to/database.db \                 # Output index database.
-      --target /path/to/compile_commands.json \   # Compile commands
+      --target /path/to/build-artifacts.json \   # Build artifacts
       --workspace /path/to/workspace \            # Workspace directory
       --env /path/to/environment-vars \           # Saved environment variables
       --show_progress \                           # Show progress indicators
