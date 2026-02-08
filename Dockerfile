@@ -5,7 +5,7 @@ FROM --platform=${PLATFORM} ${IMAGE} AS builder
 ENV INSTALL_DIR=/work/install
 
 ARG NODE_VERSION=20
-ARG PYTHON_VERSION=3.11
+ARG PYTHON_VERSION=3.12
 
 # Install dependencies
 RUN apt-get update && \
